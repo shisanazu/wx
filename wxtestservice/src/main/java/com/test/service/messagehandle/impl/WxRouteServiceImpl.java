@@ -8,19 +8,28 @@ import com.test.common.wxraw.WXBizMsgCrypt;
 import com.test.service.messagehandle.WxEventService;
 import com.test.service.messagehandle.WxMessageService;
 import com.test.service.messagehandle.WxRouteService;
+import com.test.service.tokenmanager.AccessTokenService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import static com.test.common.util.XmlUtil.xmlToJsonObj;
 
 
+@Slf4j
 @Service
 public class WxRouteServiceImpl implements WxRouteService {
     @Autowired
+    @Qualifier("wxEventClickServiceImpl")
     private WxEventService wxEventService;
 
     @Autowired
+    @Qualifier("wxMessageServiceImpl")
     private WxMessageService wxMessageService;
+
+    @Autowired
+    private AccessTokenService accessTokenService;
 
     @Override
     public String preRoute(WxReqParamVo wxReqParamVo) {
@@ -31,7 +40,7 @@ public class WxRouteServiceImpl implements WxRouteService {
         WXBizMsgCrypt pc = null;
         if ("aes".equals(wxReqParamVo.getEncryptType())) {
             try {
-                pc = new WXBizMsgCrypt(WxSubscribeBaseConstant.token, WxSubscribeBaseConstant.encodingAesKey, WxSubscribeBaseConstant.appId);
+                pc = new WXBizMsgCrypt(accessTokenService.getAccessToken(), WxSubscribeBaseConstant.encodingAesKey, WxSubscribeBaseConstant.appId);
                 String result2 = pc.decryptMsg(wxReqParamVo.getMsgSignature(), wxReqParamVo.getTimestamp(), wxReqParamVo.getNonce(), wxReqParamVo.getBody());
                 wxReqParamVo.setBody(result2);
             } catch (AesException e) {
@@ -43,6 +52,7 @@ public class WxRouteServiceImpl implements WxRouteService {
         String res = "success";
         try {
             res = route(paramMap);
+            log.info("请求返回-->{}",res);
         } catch (Exception e) {
             e.printStackTrace();
             return res;

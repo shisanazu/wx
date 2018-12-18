@@ -46,6 +46,8 @@ public class WxApiConstant {
     public static class ResourcesApi {
         // 上传图文消息素材
         public static final String ADD = "https://api.weixin.qq.com/cgi-bin/media/uploadnews?access_token={1}";
+        // 上传文件等图片等
+        public static final String MULTIPART_ADD = "http://file.api.weixin.qq.com/cgi-bin/media/upload?access_token={1}&type={2}";
     }
 
     public static class MessageSendApi {

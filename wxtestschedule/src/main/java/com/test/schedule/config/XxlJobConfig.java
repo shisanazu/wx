@@ -1,4 +1,4 @@
-package com.test.service.config.xxljobconfig;
+package com.test.schedule.config;
 
 import com.xxl.job.core.executor.XxlJobExecutor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class XxlJobConfig {
-    @Bean
+    @Bean(value="xxlJobExecutor",initMethod = "start", destroyMethod = "destroy")
     @ConfigurationProperties(prefix = "xxl.job")
     public XxlJobExecutor init() {
         return new XxlJobExecutor();

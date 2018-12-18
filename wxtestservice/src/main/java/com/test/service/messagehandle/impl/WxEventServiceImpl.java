@@ -10,23 +10,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@Service
+@Service("wxEventServiceImpl")
 public class WxEventServiceImpl implements WxEventService {
 
-    private Map<String, WxEventService> mapEvent = new HashMap<>();
+    public Map<String, WxEventService> mapEvent = new HashMap<>();
 
-    @PostConstruct
-    private void init() {
-        mapEvent.put("CLICK", new WxEventService() {
-            @Override
-            public String eventService(JSONObject param) {
-                String resMsg = param.getString("EventKey");
-                return WxResponseForm.MsgFormText(param.getString("FromUserName"),param.getString("ToUserName"),System.currentTimeMillis(),resMsg);
-            }
-        });
-    }
     @Override
     public String eventService(JSONObject param) {
-        return mapEvent.get(param.getString("Event")).eventService(param);
+        if (param.getString("Event") != null) {
+            return mapEvent.get(param.getString("Event")).eventService(param);
+        } else {
+            return "success";
+        }
     }
 }

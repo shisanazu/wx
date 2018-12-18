@@ -5,5 +5,5 @@ package com.test.service.tokenmanager;
  */
 public interface AccessTokenService {
     String getAccessToken();
-    void obtainAccessToken();
+    String obtainAccessToken();
 }

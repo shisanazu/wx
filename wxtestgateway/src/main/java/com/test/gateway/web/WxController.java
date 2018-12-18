@@ -20,6 +20,7 @@ public class WxController {
 
     @Autowired
     private WxRouteService wxRouteService;
+
     @RequestMapping("/wxservice")
     @ResponseBody
     public Object wxService(HttpServletRequest request) {

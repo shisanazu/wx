@@ -9,16 +9,17 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
+@Service("wxMessageServiceImpl")
 public class WxMessageServiceImpl implements WxMessageService {
 
-    private Map<String, WxMessageService> mapMessage = new HashMap<>();
+    public Map<String, WxMessageService> mapMessage = new HashMap<>();
 
-    @PostConstruct
-    private void init() {
-    }
     @Override
     public String messageService(JSONObject JsonParam) {
-        return mapMessage.get(JsonParam.getString("MsgType")).messageService(JsonParam);
+        if ( mapMessage.get(JsonParam.getString("MsgType")) != null) {
+            return mapMessage.get(JsonParam.getString("MsgType")).messageService(JsonParam);
+        } else {
+            return null;
+        }
     }
 }

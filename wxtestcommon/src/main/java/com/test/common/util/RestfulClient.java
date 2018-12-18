@@ -1,11 +1,15 @@
 package com.test.common.util;
 
-import org.springframework.http.*;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
+import java.io.File;
 
 public class RestfulClient {
     private static RestTemplate restTemplate;
@@ -84,22 +88,11 @@ public class RestfulClient {
         ResponseEntity<T> result = restTemplate.getForEntity(url,c,param);
         return result.getBody();
     }
-
-    public static <T> T postFormFile(String url,Class<T> c,Object param) {
-        HttpHeaders headers = new HttpHeaders();
-        MediaType type = MediaType.parseMediaType("multipart/form-data");
-        headers.setContentType(type);
-        if (param instanceof Map)  {
-            MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-            for(Map.Entry<String,Object> per :((Map<String,Object>) param).entrySet()) {
-                form.add(per.getKey(),per.getValue());
-            }
-            HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<MultiValueMap<String,Object>>(form, headers);
-            ResponseEntity<T> result = restTemplate.exchange(url, HttpMethod.POST, httpEntity, c, param);
-            return result.getBody();
-        }
-        return null;
+    public static <T> T postFormFile(String url,Class<T> c,Object param)  {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpEntity httpEntity = new HttpEntity(param, httpHeaders);
+        ResponseEntity<T> res = restTemplate.postForEntity(url, httpEntity, c);
+        return res.getBody();
     }
-
-
 }
