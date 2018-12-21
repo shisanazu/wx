@@ -29,6 +29,7 @@ public class WxRouteServiceImpl implements WxRouteService {
     private WxMessageService wxMessageService;
 
     @Autowired
+    @Qualifier("accessTokenServiceImpl")
     private AccessTokenService accessTokenService;
 
     @Override

@@ -5,6 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -68,7 +69,11 @@ public class RestfulClient {
         restTemplate = new RestTemplate(messageConverters);
         restTemplate.setRequestFactory(clientHttpRequestFactory);
         restTemplate.setErrorHandler(new DefaultResponseErrorHandler());*/
-        restTemplate = new RestTemplate();
+        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        httpRequestFactory.setConnectionRequestTimeout(3000);
+        httpRequestFactory.setConnectTimeout(3000);
+        httpRequestFactory.setReadTimeout(3000);
+        restTemplate = new RestTemplate(httpRequestFactory);
     }
     public static <T> T postJson(String url,Class<T> c,Object param, Object... urlParm) {
         HttpHeaders httpHeaders = new HttpHeaders();
